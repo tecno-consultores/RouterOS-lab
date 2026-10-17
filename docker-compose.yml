@@ -1,0 +1,82 @@
+x-routeros-base: &routeros-base
+  image: cnsoluciones/mikrotik:latest
+  privileged: true
+  restart: unless-stopped
+  cap_add:
+    - NET_ADMIN
+  devices:
+    - /dev/net/tun
+
+services:
+  r1:
+    <<: *routeros-base
+    container_name: "mikrotik-r1"
+    hostname: "R1"
+    ports:
+      - "2201:22"     # SSH R1
+      - "8881:80"     # WebFig R1
+      - "8291:8291"   # Winbox R1
+      - "8728:8728"   # API R1
+    networks:
+      mgmt_net:
+        ipv4_address: 172.30.0.11
+      enlace_r1_r2:
+        ipv4_address: 10.12.0.11
+      enlace_r1_r3:
+        ipv4_address: 10.13.0.11
+
+  r2:
+    <<: *routeros-base
+    container_name: "mikrotik-r2"
+    hostname: "R2"
+    ports:
+      - "2202:22"     # SSH R2
+      - "8882:80"     # WebFig R2
+      - "8292:8291"   # Winbox R2
+      - "8729:8728"   # API R2
+    networks:
+      mgmt_net:
+        ipv4_address: 172.30.0.12
+      enlace_r1_r2:
+        ipv4_address: 10.12.0.12
+      enlace_r2_r3:
+        ipv4_address: 10.23.0.12
+
+  r3:
+    <<: *routeros-base
+    container_name: "mikrotik-r3"
+    hostname: "R3"
+    ports:
+      - "2203:22"     # SSH R3
+      - "8883:80"     # WebFig R3
+      - "8293:8291"   # Winbox R3
+      - "8730:8728"   # API R3
+    networks:
+      mgmt_net:
+        ipv4_address: 172.30.0.13
+      enlace_r1_r3:
+        ipv4_address: 10.13.0.13
+      enlace_r2_r3:
+        ipv4_address: 10.23.0.13
+
+networks:
+  mgmt_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+  enlace_r1_r2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.12.0.0/24
+  enlace_r1_r3:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.13.0.0/24
+  enlace_r2_r3:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.23.0.0/24

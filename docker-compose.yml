@@ -1,5 +1,5 @@
 x-routeros-base: &routeros-base
-  image: cnsoluciones/mikrotik:latest
+  image: mikrotik/chr:stable
   privileged: true
   restart: unless-stopped
   cap_add:
@@ -15,6 +15,7 @@ services:
     ports:
       - "2201:22"     # SSH R1
       - "8881:80"     # WebFig R1
+      - "8441:443"    # WebFig HTTPS R1
       - "8291:8291"   # Winbox R1
       - "8728:8728"   # API R1
     networks:
@@ -32,6 +33,7 @@ services:
     ports:
       - "2202:22"     # SSH R2
       - "8882:80"     # WebFig R2
+      - "8442:443"    # WebFig HTTPS R2
       - "8292:8291"   # Winbox R2
       - "8729:8728"   # API R2
     networks:
@@ -49,6 +51,7 @@ services:
     ports:
       - "2203:22"     # SSH R3
       - "8883:80"     # WebFig R3
+      - "8443:443"    # WebFig HTTPS R3
       - "8293:8291"   # Winbox R3
       - "8730:8728"   # API R3
     networks:
